@@ -8,6 +8,7 @@ import { User } from './user.entity';
   imports: [TypeOrmModule.forFeature([User])], // Every module used in another module should be passed throgh imports for declearing.
   // forFeature indicates this module is passed to be used only for its feature and not for instanciation.
   controllers: [UserController],
-  providers: [UserService]
+  providers: [UserService],
+  exports: [UserService] // Circular export-import
 })
-export class UserModule {}
+export class UserModule {};

@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Param, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { ConflictException } from '@nestjs/common/exceptions';
 
-
+@UseInterceptors(ClassSerializerInterceptor) // To serialize data flow and apply entity setting (like exclude).
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { } // Do NOT inject models here. You work with models in services.
@@ -12,15 +12,15 @@ export class UserController {
     @Get()
     async getUsers(): Promise<User[]> {
         return await this.userService.findAllUsers();
-    }
+    };
 
     @Get('/:id')
     async getUser(@Param('id') id: number): Promise<User> {
         return await this.userService.findOneUser(id);
-    }
+    };
 
     @Post()
-    @HttpCode(201)
+    @HttpCode(201) // http code if this end point ends with success.
     async addUser(@Body() body: CreateUserDto) {
         // @Body() decorates body based on CreateUserDto and does the validation.
         // So by passing the type 'CreateUserDto', nest realizes that 'body' should be compatibale with that DTO and
@@ -30,9 +30,9 @@ export class UserController {
         @Get(:p)
         f(@Param() p: typeofparam){}
         */
-        const duplicated = await this.userService.findOneUser(null, body.username);
-        if (!!duplicated) throw new ConflictException("Username already exists!") // this error will be passed to error handler with 409 status code
+        const duplicated: User = await this.userService.findOneUser(null, body.username);
+        if (!!duplicated) throw new ConflictException("Username already exists!"); // this error will be passed to error handler with 409 status code
         return await this.userService.createUser(body);
-    }
+    };
 
-}
+};

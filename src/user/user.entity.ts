@@ -9,8 +9,8 @@ export class User { // Do NOT validate here please. Create a schema for it later
   @Column()
   username: string;
 
-  @Column({ select: false })
-  // @Exclude({ toPlainOnly: true })
+  @Column()
+  @Exclude()
   password: string;
 
   @Column()

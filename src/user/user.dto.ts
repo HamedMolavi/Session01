@@ -9,7 +9,7 @@ export class CreateUserDto {
 
     @IsNotEmpty()
     username: string;
-}
+};
 
 export class GetUserDto {
     id?: number;
@@ -17,4 +17,4 @@ export class GetUserDto {
     email: string;
 
     username: string;
-}
+};
