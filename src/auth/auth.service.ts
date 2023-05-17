@@ -12,8 +12,11 @@ export class AuthService {
     async login(user: User, rememberMe: boolean): Promise<string> {
         const token = uuid();
         const mustSetSession: number = 604800000;
-        await AuthService.keyv.set(token, user.id, rememberMe? 604800000: mustSetSession); // true
-        console.log(token);
+        await AuthService.keyv.set(token, user.id, rememberMe ? 604800000 : mustSetSession); // true
         return token;
+    };
+    async logout(token: string): Promise<void> {
+        await AuthService.keyv.delete(token);
+        return;
     };
 }

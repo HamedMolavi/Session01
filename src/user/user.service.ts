@@ -40,7 +40,7 @@ export class UserService {
         return await this.userRepository.findOne({ where: id ? { id } : { username } });
     };
 
-    async createUser(body: CreateUserDto){
+    async createUser(body: CreateUserDto): Promise<boolean>{
         const newUser: User = this.userRepository.create(body);
         await this.userRepository.save(newUser);
         return true;

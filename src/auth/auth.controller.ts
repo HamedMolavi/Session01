@@ -3,7 +3,7 @@ import { Body, ConflictException, Controller, Get, HttpCode, Inject, Param, Post
 import { CreateUserDto } from 'src/user/user.dto';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
-import { LoginDto } from './auth.dto';
+import { LoginDto, LogoutDto } from './auth.dto';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -25,7 +25,7 @@ Or set in headers using your client service.`}; // render login page.
 
     @Post('signup')
     @HttpCode(201)
-    async signup(@Body() body: CreateUserDto) {
+    async signup(@Body() body: CreateUserDto): Promise<boolean> {
         const duplicated: User = await this.userService.findOneUser(null, body.username);
         if (!!duplicated) throw new ConflictException("Username already exists!"); // this error will be passed to error handler with 409 status code
         return await this.userService.createUser(body);
@@ -33,10 +33,16 @@ Or set in headers using your client service.`}; // render login page.
 
     @Post('login')
     @HttpCode(200)
-    async login(@Body() body: LoginDto) {
+    async login(@Body() body: LoginDto): Promise<string> {
         const user: User = await this.userService.findOneUser(null, body.username);
         if (!user) throw new NotFoundException("User not found!");
         if (user.password !== body.password) throw new NotFoundException("User not found!");
         return await this.authService.login(user, body.rememberMe);
+    };
+
+    @Post('logout')
+    @HttpCode(204)
+    async logout(@Body() body: LogoutDto): Promise<void> {
+        return await this.authService.logout(body.token);
     };
 }

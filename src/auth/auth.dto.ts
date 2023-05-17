@@ -11,3 +11,8 @@ export class LoginDto {
     @Column({ default: true })
     rememberMe: boolean;
 };
+
+export class LogoutDto {
+    @IsNotEmpty()
+    token: string;
+}
