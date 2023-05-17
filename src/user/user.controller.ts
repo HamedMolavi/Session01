@@ -1,38 +1,38 @@
-import { Controller, Get, Post, Body, Param, HttpCode, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode, UseInterceptors, ClassSerializerInterceptor, Put, Delete, Req } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { ConflictException } from '@nestjs/common/exceptions';
+import { Request } from 'express';
 
 @UseInterceptors(ClassSerializerInterceptor) // To serialize data flow and apply entity setting (like exclude).
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { } // Do NOT inject models here. You work with models in services.
 
-    @Get()
-    async getUsers(): Promise<User[]> {
-        return await this.userService.findAllUsers();
+    // Add admin role for these
+    // @Get()
+    // async getUsers(): Promise<User[]> {
+    //     return await this.userService.findAllUsers();
+    // };
+
+    // Add admin role for these
+    // @Get('/:id')
+    // async getUser(@Param('id') id: number): Promise<User> {
+    //     return await this.userService.findOneUser(id);
+    // };
+
+    @Put()
+    @HttpCode(200)
+    async updateUser(@Req() req: Request): Promise<Request>{ //: Promise<User>, @Body() body: UpdateUserDto
+        return req;
+        // return 'ok'
+        // return await this.userService.updateUser(body);
     };
 
-    @Get('/:id')
-    async getUser(@Param('id') id: number): Promise<User> {
-        return await this.userService.findOneUser(id);
+    @Delete('/:id')
+    @HttpCode(204)
+    async deleteUser(@Param('id') id: number): Promise<void> {
+        return this.userService.deleteUser(id);
     };
-
-    @Post()
-    @HttpCode(201) // http code if this end point ends with success.
-    async addUser(@Body() body: CreateUserDto) {
-        // @Body() decorates body based on CreateUserDto and does the validation.
-        // So by passing the type 'CreateUserDto', nest realizes that 'body' should be compatibale with that DTO and
-        // returns error to the error handler if other wise.
-        // For other forms of inputs we should use the appropriate decorator, for example to use params:
-        /*
-        @Get(:p)
-        f(@Param() p: typeofparam){}
-        */
-        const duplicated: User = await this.userService.findOneUser(null, body.username);
-        if (!!duplicated) throw new ConflictException("Username already exists!"); // this error will be passed to error handler with 409 status code
-        return await this.userService.createUser(body);
-    };
-
 };

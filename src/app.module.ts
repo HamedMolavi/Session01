@@ -18,9 +18,9 @@ import { MiddlewareConsumer } from '@nestjs/common/interfaces/middleware/middlew
 
 
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes(''); // { path: 'user', method: RequestMethod.ALL }
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(AuthMiddleware)
+  //     .forRoutes(''); // { path: 'user', method: RequestMethod.ALL }
+  // }
 }
