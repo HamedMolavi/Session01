@@ -19,14 +19,13 @@ export class GetUserDto {
     username: string;
 };
 export class UpdateUserDto {
-    @IsNotEmpty()
-    id: number;
-
     @IsOptional()
     @IsEmail()
     email?: string;
 
+    @IsOptional()
     username?: string;
 
+    @IsOptional()
     password?: string;
 };

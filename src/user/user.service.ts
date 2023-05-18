@@ -46,14 +46,17 @@ export class UserService {
         return true;
     };
 
-    async updateUser(body: UpdateUserDto): Promise<User> {
-        const { id, ...updateBody } = body;
-        this.userRepository.update(id, updateBody);
+    async updateUser(id: number, body: UpdateUserDto): Promise<User> {
+        this.userRepository.update(id, body);
         return this.findOneUser(id);
     };
 
-    async deleteUser(id: number): Promise<void> {
-        this.userRepository.delete(id);
-        return;
+    async deleteUser(id: number): Promise<boolean> {
+        try {
+            this.userRepository.delete(id);
+            return true;
+        } catch (error) {
+            return false;
+        };
     };
 }
